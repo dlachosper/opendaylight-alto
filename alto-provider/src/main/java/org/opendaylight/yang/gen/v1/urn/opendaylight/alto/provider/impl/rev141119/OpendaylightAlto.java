@@ -1,36 +1,24 @@
 package org.opendaylight.yang.gen.v1.urn.opendaylight.alto.provider.impl.rev141119;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
 
-import org.opendaylight.controller.config.yang.config.alto_provider.impl.AbstractAltoProviderModule;
 import org.opendaylight.controller.config.yang.config.alto_provider.impl.AltoProviderRuntimeMXBean;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
-import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.TransactionStatus;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataChangeEvent;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.controller.sal.binding.api.NotificationProviderService;
-import org.opendaylight.controller.sal.common.util.Rpcs;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
-import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +47,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.alto.rev141119.resources.ne
 import org.opendaylight.yang.gen.v1.urn.opendaylight.alto.service.did.rev141101.network.map.data.Map;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.alto.service.did.rev141101.network.map.data.MapBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.alto.service.types.rev141101.EndpointAddressType;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.alto.service.types.rev141101.EndpointPrefix;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.alto.service.types.rev141101.PidName;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.alto.service.types.rev141101.ResourceId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.alto.service.types.rev141101.TagString;
@@ -72,7 +59,6 @@ import com.google.common.util.concurrent.AsyncFunction;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
 
 public class OpendaylightAlto implements AltoServiceService,
     AltoProviderRuntimeMXBean, DataChangeListener, AutoCloseable {
@@ -83,11 +69,13 @@ public class OpendaylightAlto implements AltoServiceService,
     public static final InstanceIdentifier<Resources> ALTO_IID = InstanceIdentifier
         .builder(Resources.class).build();
 
+    // Currently we don't have any notifications.
     private NotificationProviderService notificationProvider;
     private DataBroker dataProvider;
 
     private final ExecutorService executor;
 
+    // dummy state data example
     private final AtomicLong toastsMade = new AtomicLong(0);
 
     public OpendaylightAlto() {
@@ -105,7 +93,7 @@ public class OpendaylightAlto implements AltoServiceService,
     }
 
     /**
-     * Implemented from the AutoCloseable interface.
+     * Implemented from the AutoCloseable interface. Delete all resources.
      */
     @Override
     public void close() throws ExecutionException, InterruptedException {
@@ -118,21 +106,18 @@ public class OpendaylightAlto implements AltoServiceService,
             Futures.addCallback(tx.submit(), new FutureCallback<Void>() {
                 @Override
                 public void onSuccess(final Void result) {
-                    LOG.debug("Delete Toaster commit result: " + result);
+                    LOG.debug("Delete ALTO commit result: " + result);
                 }
 
                 @Override
                 public void onFailure(final Throwable t) {
-                    LOG.error("Delete of Toaster failed", t);
+                    LOG.error("Delete of ALTO failed", t);
                 }
             });
         }
     }
 
     private Resources buildResources() {
-        // note - we are simulating a device whose manufacture and model are
-        // fixed (embedded) into the hardware.
-        // This is why the manufacture and model number are hardcoded.
         return new ResourcesBuilder().setNetworkMaps(buildDummyNetworkMaps())
             .setTeststring("TestAltoRestconfDIDWired")
             .setTestdatastring("tstdatastring")
@@ -142,7 +127,6 @@ public class OpendaylightAlto implements AltoServiceService,
     /*
      * builds a dummy container networkmaps
      */
-
     private NetworkMaps buildDummyNetworkMaps() {
         ResourceId dummyResourceId = new ResourceId("my-dummy-net-map-1");
 
@@ -156,11 +140,9 @@ public class OpendaylightAlto implements AltoServiceService,
             EndpointAddressType.Enumeration.Ipv6);
 
         /* for PID1 */
-        List<EndpointPrefix> pid1list = new ArrayList<>();
-        pid1list.add(new EndpointPrefix(new Ipv4Prefix(
-            "192.0.2.0/24")));
-        pid1list.add(new EndpointPrefix(new Ipv4Prefix(
-            "198.51.100.0/25")));
+        List<IpPrefix> pid1list = new ArrayList<>();
+        pid1list.add(new IpPrefix(new Ipv4Prefix("192.0.2.0/24")));
+        pid1list.add(new IpPrefix(new Ipv4Prefix("198.51.100.0/25")));
 
         EndpointAddressGroup eag1 = new EndpointAddressGroupBuilder()
             .setAddressType(ipv4Type).setEndpointPrefix(pid1list).build();
@@ -172,9 +154,8 @@ public class OpendaylightAlto implements AltoServiceService,
             .setEndpointAddressGroup(eagList1).build();
 
         /* for PID2 */
-        List<EndpointPrefix> pid2list = new ArrayList<>();
-        pid2list.add(new EndpointPrefix(new Ipv4Prefix(
-            "198.51.100.128/25")));
+        List<IpPrefix> pid2list = new ArrayList<>();
+        pid2list.add(new IpPrefix(new Ipv4Prefix("198.51.100.128/25")));
 
         EndpointAddressGroup eag2 = new EndpointAddressGroupBuilder()
             .setAddressType(ipv4Type).setEndpointPrefix(pid2list).build();
@@ -185,14 +166,13 @@ public class OpendaylightAlto implements AltoServiceService,
             .setEndpointAddressGroup(eagList2).build();
 
         /* for PID3 */
-        List<EndpointPrefix> pid3ipv4List = new ArrayList<>();
-        pid3ipv4List.add(new EndpointPrefix(new Ipv4Prefix(
-            "0.0.0.0/0")));
+        List<IpPrefix> pid3ipv4List = new ArrayList<>();
+        pid3ipv4List.add(new IpPrefix(new Ipv4Prefix("0.0.0.0/0")));
         EndpointAddressGroup eag3ipv4 = new EndpointAddressGroupBuilder()
             .setAddressType(ipv4Type).setEndpointPrefix(pid3ipv4List).build();
 
-        List<EndpointPrefix> pid3ipv6List = new ArrayList<>();
-        pid3ipv6List.add(new EndpointPrefix(new Ipv6Prefix("::/0")));
+        List<IpPrefix> pid3ipv6List = new ArrayList<>();
+        pid3ipv6List.add(new IpPrefix(new Ipv6Prefix("::/0")));
         EndpointAddressGroup eag3ipv6 = new EndpointAddressGroupBuilder()
             .setAddressType(ipv6Type).setEndpointPrefix(pid3ipv6List).build();
 
@@ -228,16 +208,15 @@ public class OpendaylightAlto implements AltoServiceService,
         final AsyncDataChangeEvent<InstanceIdentifier<?>, DataObject> change) {
         DataObject dataObject = change.getUpdatedSubtree();
         if (dataObject instanceof Resources) {
-            Resources toaster = (Resources) dataObject;
-
-            LOG.info("onDataChanged - new Toaster config: {}", toaster);
+            Resources altoResources = (Resources) dataObject;
+            LOG.info("onDataChanged - new ALTO config: {}", altoResources);
         }
     }
 
-    /* RPCs from restconf AltoServiceService Interface TODO */
+    /* dummy example state data TODO */
 
     /**
-     * JMX RPC call implemented from the ToasterProviderRuntimeMXBean interface.
+     * JMX RPC call implemented from the AltoProviderRuntimeMXBean interface.
      */
     @Override
     public void clearToastsMade() {
@@ -340,41 +319,16 @@ public class OpendaylightAlto implements AltoServiceService,
 
                         LOG.info("Read network map rid: {}", networkMapId);
                         LOG.info("Read network map tag: {}", networkMapTag);
-                        LOG.info("Reading network map: {}",
-                            networkMapData.toString());
 
                         List<PidName> pidList = input.getPids();
 
                         List<Map> networkMapMap = networkMapData.get().getMap();
                         List<Map> filteredMap = new ArrayList<>();
-                        
+
                         for (Map m : networkMapMap) {
                             PidName pid = m.getPid();
                             if (pidList.contains(pid)) {
                                 filteredMap.add(m);
-                                /*
-                                List<EndpointAddressGroup> eagl = m.getEndpointAddressGroup();
-                                List<EndpointAddressGroup> neweagl = new ArrayList<>();
-                                
-                                for (EndpointAddressGroup e: eagl) {
-                                    EndpointAddressType addrType = new EndpointAddressType(e.getAddressType());
-                                    List<EndpointPrefix> newepl = new ArrayList<>();
-                                    List<EndpointPrefix> epl = e.getEndpointPrefix();
-                                    
-                                    for (EndpointPrefix p: epl) {
-                                        newepl.add(new EndpointPrefix(p));
-                                    }
-
-                                    EndpointAddressGroup eag = new EndpointAddressGroupBuilder()
-                                        .setAddressType(addrType).setEndpointPrefix(newepl).build();
-
-                                    neweagl.add(eag);
-                                }
-                                
-                                Map newmap = new MapBuilder().setPid(new PidName(pid))
-                                    .setEndpointAddressGroup(neweagl).build();
-                                filteredMap.add(newmap);
-                                */
                             }
                         }
 
@@ -385,24 +339,12 @@ public class OpendaylightAlto implements AltoServiceService,
                         FilteredNetworkMapServiceOutput serviceOutput = new FilteredNetworkMapServiceOutputBuilder()
                             .setFilteredNetworkMapService(serviceResult)
                             .build();
-                        
-                        LOG.info("future output: {}", serviceOutput.toString());
 
                         return Futures.immediateFuture(RpcResultBuilder
                             .<FilteredNetworkMapServiceOutput> success()
                             .withResult(serviceOutput).build());
                     }
                 });
-
-        try {
-            LOG.info("before rpc return: {}", futureResult.get().toString());
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            LOG.info("interruptexception: {}", e.getStackTrace().toString());
-        } catch (ExecutionException e) {
-            // TODO Auto-generated catch block
-            LOG.info("executiontexception: {}", e.getStackTrace().toString());
-        }
 
         return futureResult;
     }

@@ -1,7 +1,7 @@
 package org.opendaylight.yang.gen.v1.urn.opendaylight.alto.service.types.rev141101.endpoint.address.group;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.alto.service.types.rev141101.EndpointAddressType;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.alto.service.types.rev141101.EndpointPrefix;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IpPrefix;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.alto.service.types.rev141101.endpoint.address.group.EndpointAddressGroupKey;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
@@ -19,7 +19,7 @@ import java.util.List;
  *         type endpoint-address-type;
  *     }
  *     leaf-list endpoint-prefix {
- *         type endpoint-prefix;
+ *         type ip-prefix;
  *     }
  * }
  * </pre>
@@ -41,7 +41,7 @@ public interface EndpointAddressGroup
 
     EndpointAddressType getAddressType();
     
-    List<EndpointPrefix> getEndpointPrefix();
+    List<IpPrefix> getEndpointPrefix();
     
     /**
      * Returns Primary Key of Yang List Type

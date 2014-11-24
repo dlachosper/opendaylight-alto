@@ -48,7 +48,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.alto.rev141119.Resources;
  *                             type endpoint-address-type;
  *                         }
  *                         leaf-list endpoint-prefix {
- *                             type endpoint-prefix;
+ *                             type ip-prefix;
  *                         }
  *                     }
  *                     uses endpoint-address-group;
@@ -275,7 +275,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.alto.rev141119.Resources;
  *                             type endpoint-address-type;
  *                         }
  *                         leaf-list endpoint-prefix {
- *                             type endpoint-prefix;
+ *                             type ip-prefix;
  *                         }
  *                     }
  *                     uses endpoint-address-group;

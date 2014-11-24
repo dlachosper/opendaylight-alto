@@ -28,7 +28,7 @@ import org.opendaylight.yangtools.yang.binding.Augmentable;
  *                     type endpoint-address-type;
  *                 }
  *                 leaf-list endpoint-prefix {
- *                     type endpoint-prefix;
+ *                     type ip-prefix;
  *                 }
  *             }
  *             uses endpoint-address-group;

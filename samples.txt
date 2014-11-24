@@ -1,0 +1,14 @@
+http://localhost:8080/restconf/operational/alto-service:resources/network-maps/network-map/my-dummy-net-map-1
+
+http://localhost:8080/restconf/operations/alto-service:filtered-network-map-service
+
+application/yang.data+json
+
+{
+	"input": {
+		"alto-service:resource-id": "my-dummy-net-map-1",
+		"alto-service:pids": ["PID1", "PID3"]
+	}
+}
+
+{"output":{"filtered-network-map-service":{"resource-id":"my-dummy-net-map-1","tag":"dummyv01","map":[{"pid":"PID3","endpoint-address-group":[{"address-type":"ipv4","endpoint-prefix":["::/0"]},{"address-type":"ipv4","endpoint-prefix":["0.0.0.0/0"]}]},{"pid":"PID1","endpoint-address-group":[{"address-type":"ipv4","endpoint-prefix":["192.0.2.0/24","198.51.100.0/25"]}]}]}}}

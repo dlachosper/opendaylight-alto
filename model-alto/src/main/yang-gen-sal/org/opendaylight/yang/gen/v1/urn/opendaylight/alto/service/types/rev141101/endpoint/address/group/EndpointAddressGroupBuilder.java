@@ -1,10 +1,10 @@
 package org.opendaylight.yang.gen.v1.urn.opendaylight.alto.service.types.rev141101.endpoint.address.group;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.alto.service.types.rev141101.EndpointAddressType;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.alto.service.types.rev141101.EndpointPrefix;
 import java.util.Collections;
 import java.util.Map;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import java.util.HashMap;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IpPrefix;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.alto.service.types.rev141101.endpoint.address.group.EndpointAddressGroupKey;
 import java.util.List;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
@@ -17,7 +17,7 @@ import org.opendaylight.yangtools.yang.binding.Augmentation;
 public class EndpointAddressGroupBuilder {
 
     private EndpointAddressType _addressType;
-    private List<EndpointPrefix> _endpointPrefix;
+    private List<IpPrefix> _endpointPrefix;
     private EndpointAddressGroupKey _key;
 
     Map<java.lang.Class<? extends Augmentation<org.opendaylight.yang.gen.v1.urn.opendaylight.alto.service.types.rev141101.endpoint.address.group.EndpointAddressGroup>>, Augmentation<org.opendaylight.yang.gen.v1.urn.opendaylight.alto.service.types.rev141101.endpoint.address.group.EndpointAddressGroup>> augmentation = new HashMap<>();
@@ -47,7 +47,7 @@ public class EndpointAddressGroupBuilder {
         return _addressType;
     }
     
-    public List<EndpointPrefix> getEndpointPrefix() {
+    public List<IpPrefix> getEndpointPrefix() {
         return _endpointPrefix;
     }
     
@@ -68,7 +68,7 @@ public class EndpointAddressGroupBuilder {
         return this;
     }
     
-    public EndpointAddressGroupBuilder setEndpointPrefix(List<EndpointPrefix> value) {
+    public EndpointAddressGroupBuilder setEndpointPrefix(List<IpPrefix> value) {
         this._endpointPrefix = value;
         return this;
     }
@@ -94,7 +94,7 @@ public class EndpointAddressGroupBuilder {
         }
 
         private final EndpointAddressType _addressType;
-        private final List<EndpointPrefix> _endpointPrefix;
+        private final List<IpPrefix> _endpointPrefix;
         private final EndpointAddressGroupKey _key;
 
         private Map<java.lang.Class<? extends Augmentation<org.opendaylight.yang.gen.v1.urn.opendaylight.alto.service.types.rev141101.endpoint.address.group.EndpointAddressGroup>>, Augmentation<org.opendaylight.yang.gen.v1.urn.opendaylight.alto.service.types.rev141101.endpoint.address.group.EndpointAddressGroup>> augmentation = new HashMap<>();
@@ -129,7 +129,7 @@ public class EndpointAddressGroupBuilder {
         }
         
         @Override
-        public List<EndpointPrefix> getEndpointPrefix() {
+        public List<IpPrefix> getEndpointPrefix() {
             return _endpointPrefix;
         }
         

@@ -31,7 +31,7 @@ import java.util.List;
  *                     type endpoint-address-type;
  *                 }
  *                 leaf-list endpoint-prefix {
- *                     type endpoint-prefix;
+ *                     type ip-prefix;
  *                 }
  *             }
  *             uses endpoint-address-group;

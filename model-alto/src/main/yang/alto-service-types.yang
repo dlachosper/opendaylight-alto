@@ -150,12 +150,13 @@ module alto-service-types {
     description
       "Ref: RFC7285 Sec 2.2.";
   }
-  
+  /*
   typedef endpoint-prefix {
     type inet:ip-prefix;
     description
       "endpoint prefix, identical to ip-prefix defined in RFC6991.";
   }
+  */
 
   grouping endpoint-address-group {
     list endpoint-address-group {
@@ -165,7 +166,7 @@ module alto-service-types {
         mandatory true;
       }
       leaf-list endpoint-prefix {
-        type endpoint-prefix;
+        type inet:ip-prefix;
       }
     }
     description

@@ -30,7 +30,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.alto.service.did.rev141101.
  *                 type endpoint-address-type;
  *             }
  *             leaf-list endpoint-prefix {
- *                 type endpoint-prefix;
+ *                 type ip-prefix;
  *             }
  *         }
  *         uses endpoint-address-group;
