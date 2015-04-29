@@ -306,9 +306,9 @@ public class OpendaylightAlto implements AltoServiceService,
                         Optional<NetworkMap> networkMapData) throws Exception {
 
                         ResourceId networkMapId = new ResourceId(
-                            "ResourceID Not Available");
+                            "my-dummy-net-map-1");
                         TagString networkMapTag = new TagString(
-                            "Tag Not Available");
+                            "dummyv01");
 
                         if (networkMapData.isPresent()) {
                             networkMapId = ((NetworkMap) networkMapData.get())
